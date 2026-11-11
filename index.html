@@ -3,47 +3,197 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Edgar Allan Poe: Horror Tales</title>
-<meta name="description" content="Ten of Edgar Allan Poe's tales as an interactive book: read them as manuscripts arriving on your phone, make choices and gather clues. English and Portuguese.">
+<title>Edgar Allan Poe: Horror Tales — an interactive story</title>
+<meta name="description" content="Ten of Edgar Allan Poe's horror tales as an interactive story: manuscripts and letters arrive one by one, with choices, clues, sound and art.">
 <link rel="canonical" href="https://poe.borzanti.com/">
 <meta name="theme-color" content="#0B0D10">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://poe.borzanti.com/">
+<meta property="og:title" content="Edgar Allan Poe — ten horror tales, told in messages">
+<meta property="og:description" content="Manuscripts and letters arrive one by one, with choices, clues, sound and art. The first tales are free.">
+<meta property="og:image" content="https://poe.borzanti.com/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" as="image" href="img/hero.webp" media="(max-aspect-ratio: 1/1)">
+<link rel="preload" as="image" href="img/hero-wide.webp" media="(min-aspect-ratio: 1/1)">
 <style>
-  :root {
-    color-scheme: dark;
-    --ink: #0B0D10; --surface: #12161C; --line: #2B3442;
-    --accent: #7FA3CC; --bone: #E6DFD0; --bone-dim: #A19C92;
-  }
+  :root { color-scheme: dark; --ink: #0B0D10; --line: #2B3442; --blood: #3A5E8C; --blood-bright: #7FA3CC; --bone: #E6DFD0; --bone-dim: #A19C92; --gold: #D9C48A; }
   * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--ink); color: var(--bone);
-    font-family: Georgia, "Noto Serif", "Times New Roman", serif; line-height: 1.65;
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--ink); color: var(--bone); font-family: Georgia, "Noto Serif", "Times New Roman", serif; }
+  img { display: block; max-width: 100%; height: auto; }  /* sem isto, o atributo height estica a imagem */
+  h1, h2 { margin: 0; font-weight: 700; }
+  p { margin: 0; line-height: 1.6; }
+
+  /* Cada bloco é uma cena: a foto no fundo, escurecida, e o texto por cima. */
+  .scene { position: relative; overflow: hidden; isolation: isolate; }
+  .scene .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+  .scene::after { content: ""; position: absolute; inset: 0; z-index: -1; }
+
+  .hero { min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
+    text-align: center; padding: 24px 20px max(40px, env(safe-area-inset-bottom)); }
+  .hero .bg { object-position: 50% 20%; animation: drift 40s ease-in-out infinite alternate; }
+  .hero::after { background: linear-gradient(to bottom, rgba(11,13,16,.15) 0%, rgba(11,13,16,0) 30%, rgba(11,13,16,.85) 68%, var(--ink) 100%); }
+  @keyframes drift { from { transform: scale(1); } to { transform: scale(1.08) translateY(-1.5%); } }
+  h1 { font-size: clamp(38px, 10.5vw, 96px); letter-spacing: .06em; line-height: 1.05; text-shadow: 0 2px 24px #000; }
+  .sub { font-style: italic; font-size: clamp(19px, 5vw, 28px); margin: 10px 0 26px; text-shadow: 0 1px 12px #000; }
+  a.cta { display: inline-block; background: var(--blood); color: var(--bone); text-decoration: none; font-weight: 700;
+    font-size: 18px; padding: 16px 34px; border-radius: 999px; min-height: 52px; box-shadow: 0 6px 30px rgba(58,94,140,.45); }
+  a.cta:hover, a.cta:focus-visible { background: var(--blood-bright); }
+  .note { font-size: 15px; color: var(--bone-dim); margin-top: 14px; }
+  .switch { position: absolute; top: max(14px, env(safe-area-inset-top)); right: 16px; background: rgba(11,13,16,.55);
+    border: 1px solid var(--line); color: var(--bone); font: 700 14px/1 Arial, sans-serif; letter-spacing: .08em;
+    padding: 10px 14px; border-radius: 999px; cursor: pointer; }
+  .more { display: block; margin-top: 30px; color: var(--bone-dim); font-size: 26px; text-decoration: none; animation: nudge 2.4s ease-in-out infinite; }
+  @keyframes nudge { 50% { transform: translateY(8px); } }
+
+  .feature { padding: 72px 20px; }
+  .feature::after { background: linear-gradient(to bottom, var(--ink) 0%, rgba(11,13,16,.5) 24%, rgba(11,13,16,.5) 76%, var(--ink) 100%); }
+  .feature .in { max-width: 980px; margin: 0 auto; display: grid; gap: 36px; align-items: center; justify-items: center; }
+  .feature .text { text-align: center; max-width: 30em; }
+  .eyebrow { font: 700 13px/1 Arial, sans-serif; letter-spacing: .22em; color: var(--blood-bright); margin-bottom: 14px; }
+  h2 { font-size: clamp(30px, 7.5vw, 46px); line-height: 1.15; margin-bottom: 16px; }
+  .feature p { font-size: clamp(17px, 4.4vw, 20px); color: var(--bone); }
+  .feature .text { text-shadow: 0 1px 14px #000, 0 0 3px #000; }
+  .phone { width: min(70vw, 300px); height: auto; aspect-ratio: 540 / 1158; border-radius: 30px; border: 3px solid #2B3442; box-shadow: 0 24px 70px #000; overflow: hidden; background: #12161C; }
+  @media (min-width: 820px) {
+    .feature { padding: 110px 40px; }
+    .feature .in { grid-template-columns: 1fr auto; gap: 72px; }
+    .feature .text { text-align: left; }
+    .feature.flip .in { grid-template-columns: auto 1fr; }
+    .feature.flip .text { order: 2; }
   }
-  a { color: var(--accent); }
-  .wrap { max-width: 680px; margin: 0 auto; padding: 48px 16px 40px; }
-  h1 { font-size: clamp(32px, 8vw, 48px); line-height: 1.1; margin: 0 0 12px; }
-  .lead { color: var(--bone-dim); font-size: 18px; }
-  .lang { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--line); }
-  .btn {
-    display: inline-flex; align-items: center; min-height: 48px; padding: 0 22px; margin-top: 12px;
-    border-radius: 999px; background: var(--accent); color: var(--ink); text-decoration: none;
-    font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif; font-weight: 600;
+
+  .closing { padding: 120px 20px 96px; text-align: center; }
+  .closing .bg { object-position: 50% 40%; }
+  .closing::after { background: linear-gradient(to bottom, var(--ink) 0%, rgba(11,13,16,.35) 30%, rgba(11,13,16,.8) 75%, var(--ink) 100%); }
+  blockquote { margin: 0 auto 10px; max-width: 16em; font-size: clamp(28px, 7vw, 44px); font-weight: 700; line-height: 1.2; text-shadow: 0 2px 20px #000; }
+  cite { display: block; font-style: italic; color: var(--bone-dim); margin-bottom: 34px; text-shadow: 0 1px 10px #000; }
+  .free { color: var(--gold); font-weight: 700; font-size: 20px; margin-bottom: 18px; }
+
+  footer { text-align: center; font-size: 14px; color: var(--bone-dim); padding: 22px 16px 34px; border-top: 1px solid var(--line); }
+  footer a { color: var(--blood-bright); }
+
+  /* Só com JavaScript: os blocos surgem ao entrar na tela. Sem ele, tudo fica à vista. */
+  .js .reveal { opacity: 0; transform: translateY(24px); transition: opacity .9s ease, transform .9s ease; }
+  .js .reveal.in-view { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .hero .bg, .more { animation: none; }
+    .js .reveal { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
   }
-  footer { margin-top: 48px; font-size: 14px; color: var(--bone-dim); }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Edgar Allan Poe: Horror Tales</h1>
-  <p class="lead">Ten of Poe's tales as an interactive book. You are Eleanor Gray, his assistant at the Broadway Journal, and the manuscripts arrive on your phone one by one. Make choices, gather clues and follow Poe until his last night in Baltimore. English and Portuguese, with sound and illustrations.</p>
-  <a class="btn" href="https://play.google.com/store/apps/details?id=com.borzanti.poe&amp;referrer=utm_source%3Dsite%26utm_medium%3Dweb">Get it on Google Play</a>
 
-  <div class="lang" lang="pt-BR">
-    <h2>Edgar Allan Poe: Contos</h2>
-    <p class="lead">Dez contos de Poe num livro interativo. Você é Eleanor Gray, assistente dele no Broadway Journal, e os manuscritos chegam ao seu celular um a um. Faça escolhas, reúna pistas e acompanhe Poe até a última noite em Baltimore. Em português e inglês, com som e ilustrações.</p>
-    <a class="btn" href="https://play.google.com/store/apps/details?id=com.borzanti.poe&amp;hl=pt_BR&amp;referrer=utm_source%3Dsite%26utm_medium%3Dweb">Disponível no Google Play</a>
-  </div>
+<header class="scene hero">
+  <picture style="display: contents">
+    <source media="(min-aspect-ratio: 1/1)" srcset="img/hero-wide.webp" width="1920" height="1280">
+    <img class="bg" src="img/hero.webp" alt="" width="1008" height="1344">
+  </picture>
+  <button class="switch" id="switch" type="button" aria-label="Ver em português">PT</button>
+  <h1 id="title">EDGAR ALLAN POE</h1>
+  <p class="sub" data-pt="Dez contos de terror, contados em mensagens">Ten horror tales, told in messages</p>
+  <a class="cta" href="https://play.google.com/store/apps/details?id=com.borzanti.poe&amp;referrer=utm_source%3Dsite%26utm_medium%3Dweb%26utm_campaign%3Dsempre" data-pt="Ver no Google Play">See it on Google Play</a>
+  <p class="note" data-pt="Estreia em novembro de 2026 · Android · em português e em inglês">Coming November 2026 · Android · in English and Portuguese</p>
+  <a class="more" href="#messages">&#8964;</a>
+</header>
 
-  <footer><a href="privacy/">Privacy Policy</a> · <a href="privacy/#pt">Política de Privacidade</a> · <a href="mailto:admin@borzanti.com">admin@borzanti.com</a></footer>
-</div>
+<main>
+  <section class="scene feature" id="messages">
+    <img class="bg" src="img/redacao.webp" alt="" loading="lazy" width="1280" height="800">
+    <div class="in">
+      <div class="text reveal">
+        <p class="eyebrow" data-pt="1845 · NOVA YORK">1845 · NEW YORK</p>
+        <h2 data-pt="Chega como mensagem">It arrives as messages</h2>
+        <p data-pt="Você é Eleanor Gray, assistente de Poe no Broadway Journal. Os manuscritos que ele recebe, as cartas dele e os bilhetes de estranhos chegam um a um, no ritmo que você escolher.">You are Eleanor Gray, Poe's assistant at the Broadway Journal. The manuscripts he receives, his letters and notes from strangers arrive one by one, at the pace you choose.</p>
+      </div>
+      <img class="phone reveal" src="img/letter-en.webp" data-pt-src="img/letter-pt.webp" alt="The app showing a letter arriving as a message" data-pt-alt="O app mostrando uma carta que chega como mensagem" loading="lazy" width="540" height="1158">
+    </div>
+  </section>
+
+  <section class="scene feature flip">
+    <img class="bg" src="img/livro_travesseiro.webp" alt="" loading="lazy" width="1280" height="800">
+    <div class="in">
+      <div class="text reveal">
+        <p class="eyebrow" data-pt="UM PACOTE DE FITA PRETA">A PARCEL TIED IN BLACK RIBBON</p>
+        <h2 data-pt="A escolha é sua">The choice is yours</h2>
+        <p data-pt="Poe recomenda abrir o pacote só à noite. Abrir agora ou esperar? Em alguns momentos é você quem decide o que Eleanor faz. A escolha muda o que você vê, nunca o conto que Poe escreveu.">Poe suggests opening the parcel only at night. Open it now or wait? At certain moments you decide what Eleanor does. Your choice changes what you see, never the tale Poe wrote.</p>
+      </div>
+      <img class="phone reveal" src="img/choice-en.webp" data-pt-src="img/choice-pt.webp" alt="The app showing a choice between opening the parcel now and waiting for the night" data-pt-alt="O app mostrando a escolha entre abrir o pacote agora e esperar a noite" loading="lazy" width="540" height="1158">
+    </div>
+  </section>
+
+  <section class="scene feature">
+    <img class="bg" src="img/retrato_oval.webp" alt="" loading="lazy" width="1280" height="800">
+    <div class="in">
+      <div class="text reveal">
+        <p class="eyebrow" data-pt="CADERNO DE ELEANOR">ELEANOR'S NOTEBOOK</p>
+        <h2 data-pt="Anote o que parecer estranho">Note whatever seems strange</h2>
+        <p data-pt="Manchas na borda de um caderno, sete velas sobre a mesa dos juízes. As pistas vão para o caderno de Eleanor, e algumas só aparecem para quem escolhe o outro caminho.">Stains on the edge of a notebook, seven candles on the judges' table. The clues go into Eleanor's notebook, and some only show up for those who take the other path.</p>
+      </div>
+      <img class="phone reveal" src="img/notebook-en.webp" data-pt-src="img/notebook-pt.webp" alt="The app showing the oval portrait and Eleanor's notebook" data-pt-alt="O app mostrando o retrato oval e o caderno de Eleanor" loading="lazy" width="540" height="1158">
+    </div>
+  </section>
+
+  <section class="scene feature flip">
+    <img class="bg" src="img/sete_saloes.webp" alt="" loading="lazy" width="1280" height="800">
+    <div class="in">
+      <div class="text reveal">
+        <p class="eyebrow" data-pt="DE NOVA YORK A BALTIMORE">FROM NEW YORK TO BALTIMORE</p>
+        <h2 data-pt="10 contos, 47 ilustrações">10 tales, 47 illustrations</h2>
+        <p data-pt="O Coração Delator, O Gato Preto, O Barril de Amontillado, A Máscara da Morte Escarlate, O Poço e o Pêndulo, A Queda da Casa de Usher e mais quatro, com violoncelo, harmônica de vidro, chuva e um corvo na janela. Os primeiros contos são grátis; uma compra única libera o livro inteiro.">The Tell-Tale Heart, The Black Cat, The Cask of Amontillado, The Masque of the Red Death, The Pit and the Pendulum, The Fall of the House of Usher and four more, with cello, glass harmonica, rain and a raven at the window. The first tales are free; a single purchase unlocks the whole book.</p>
+      </div>
+      <img class="phone reveal" src="img/tales-en.webp" data-pt-src="img/tales-pt.webp" alt="The app's list of tales" data-pt-alt="A lista de contos do app" loading="lazy" width="540" height="1158">
+    </div>
+  </section>
+
+  <section class="scene closing">
+    <img class="bg" src="img/taverna_baltimore.webp" alt="" loading="lazy" width="1280" height="800">
+    <div class="reveal">
+      <blockquote data-pt="“Tudo o que vemos ou parecemos não passa de um sonho dentro de um sonho.”">“All that we see or seem is but a dream within a dream.”</blockquote>
+      <cite>Edgar Allan Poe</cite>
+      <p class="free" data-pt="Estreia em novembro de 2026">Coming November 2026</p>
+      <a class="cta" href="https://play.google.com/store/apps/details?id=com.borzanti.poe&amp;referrer=utm_source%3Dsite%26utm_medium%3Dweb%26utm_campaign%3Dsempre" data-pt="Ver no Google Play">See it on Google Play</a>
+    </div>
+  </section>
+</main>
+
+<footer><a href="privacy/">Privacy · Privacidade</a> · <a href="mailto:admin@borzanti.com">admin@borzanti.com</a></footer>
+
+<script>
+  document.documentElement.classList.add("js");
+
+  // Português para navegadores em português; inglês para o resto. O botão troca à mão.
+  var english = {};
+  function show(lang) {
+    var pt = lang === "pt";
+    document.querySelectorAll("[data-pt]").forEach(function (el, i) {
+      if (!(i in english)) english[i] = el.textContent;
+      el.textContent = pt ? el.dataset.pt : english[i];
+    });
+    document.querySelectorAll("[data-pt-src]").forEach(function (img) {
+      if (!img.dataset.enSrc) { img.dataset.enSrc = img.getAttribute("src"); img.dataset.enAlt = img.alt; }
+      img.src = pt ? img.dataset.ptSrc : img.dataset.enSrc;
+      img.alt = pt ? img.dataset.ptAlt : img.dataset.enAlt;
+    });
+    document.documentElement.lang = pt ? "pt-BR" : "en";
+    var button = document.getElementById("switch");
+    button.textContent = pt ? "EN" : "PT";
+    button.setAttribute("aria-label", pt ? "See it in English" : "Ver em português");
+    button.onclick = function () { show(pt ? "en" : "pt"); };
+  }
+  show((navigator.language || "").toLowerCase().indexOf("pt") === 0 ? "pt" : "en");
+
+  if ("IntersectionObserver" in window) {
+    var seen = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) { if (entry.isIntersecting) { entry.target.classList.add("in-view"); seen.unobserve(entry.target); } });
+    }, { threshold: 0.15 });
+    document.querySelectorAll(".reveal").forEach(function (el) { seen.observe(el); });
+  } else {
+    document.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in-view"); });
+  }
+</script>
 </body>
 </html>
